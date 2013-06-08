@@ -48,9 +48,9 @@ def initial_check(paths_just_there, dirs, extensions, callback):
         if not p in paths_just_there:
             callback(p)
 
-def watch(dirs, extensions, callback, daemonize=False):
+def watch(dirs, extensions, callback):
     wm = WatchManager()
     notifier = Notifier(wm, EventHandler(callback, extensions))
     for d in dirs:
         wm.add_watch(d, IN_CREATE | IN_MOVED_TO)
-    notifier.loop(daemonize=daemonize)
+    notifier.loop()

@@ -21,16 +21,7 @@ def add_entry(path):
 class Command(BaseCommand):
     help = 'Watches the configured directories for now videos to encode'
 
-    option_list = BaseCommand.option_list + (
-        make_option('--foreground',
-            action='store_false',
-            dest='daemonize',
-            default=True,
-            help="Run foreground instead of daemonize"
-        ),
-    )
-
     def handle(self, *args, **options):
         paths_just_there = [entry['original_filename'] for entry in EncodeQueueEntry.objects.get_new_entries().values('original_filename')]
         initial_check(paths_just_there, TAS_WATCHED_DIRECTORIES, TAS_VIDEO_EXTENSIONS, add_entry)
-        watch(TAS_WATCHED_DIRECTORIES, TAS_VIDEO_EXTENSIONS, add_entry, options['daemonize'])
+        watch(TAS_WATCHED_DIRECTORIES, TAS_VIDEO_EXTENSIONS, add_entry)
