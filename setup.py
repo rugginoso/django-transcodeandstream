@@ -32,4 +32,9 @@ setup(
         'transcodeandstream.management',
         'transcodeandstream.management.commands',
     ],
+    install_requires=[
+        'django>=1.4',
+        'south>=1.8',
+        'pyinotify>=0.9',
+    ]
 )
