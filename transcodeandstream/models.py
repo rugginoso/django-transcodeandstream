@@ -9,6 +9,10 @@ class EncodeQueueEntry(models.Model):
 	original_filename = models.CharField(max_length=255, unique=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	working_on = models.BooleanField(default=False)
+	progress = models.PositiveSmallIntegerField(default=0)
+	error = models.BooleanField(default=False)
+	log = models.TextField(null=True)
+
 	objects = EncodeQueueEntryManager()
 
 	class Meta:

@@ -13,3 +13,9 @@ TAS_VIDEO_EXTENSIONS = getattr(settings, 'TAS_VIDEO_EXTENSIONS', (
 	'.avi',
 	'.mov',
 ))
+
+
+TAS_FFMPEG_EXECUTABLE = getattr(settings, 'TAS_FFMPEG_EXECUTABLE', '/usr/bin/ffmpeg')
+TAS_FFMPEG_OPTIONS = getattr(settings, 'TAS_FFMPEG_EXECUTABLE', ['-vcodec', 'libvpx', '-acodec', 'libvorbis'])
+
+TAS_TRANSCODER_POLL_SECONDS = getattr(settings, 'TAS_TRANSCODER_POLL_SECONDS', 10)
