@@ -39,6 +39,15 @@ class EventHandler(ProcessEvent):
         process_new_entry(event.pathname, event.dir, self.extensions, self.callback)
 
 
+def initial_check(paths_just_there, dirs, extensions, callback):
+    paths = []
+    for d in dirs:
+        paths.extend(scan_dir(d, extensions))
+
+    for p in paths:
+        if not p in paths_just_there:
+            callback(p)
+
 def watch(dirs, extensions, callback, daemonize=False):
     wm = WatchManager()
     notifier = Notifier(wm, EventHandler(callback, extensions))

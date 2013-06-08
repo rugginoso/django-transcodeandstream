@@ -4,7 +4,7 @@ from optparse import make_option
 from transcodeandstream.models import EncodeQueueEntry
 from transcodeandstream.settings import TAS_WATCHED_DIRECTORIES, TAS_VIDEO_EXTENSIONS
 
-from _watcher import watch
+from _watcher import watch, initial_check
 from _random import generate_random_unique_name
 
 
@@ -31,4 +31,6 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **options):
+        paths_just_there = [entry['original_filename'] for entry in EncodeQueueEntry.objects.get_new_entries().values('original_filename')]
+        initial_check(paths_just_there, TAS_WATCHED_DIRECTORIES, TAS_VIDEO_EXTENSIONS, add_entry)
         watch(TAS_WATCHED_DIRECTORIES, TAS_VIDEO_EXTENSIONS, add_entry, options['daemonize'])
