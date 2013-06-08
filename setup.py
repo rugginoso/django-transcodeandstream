@@ -28,6 +28,7 @@ setup(
     ],
     packages=[
         'transcodeandstream',
+        'transcodeandstream.migrations',
         'transcodeandstream.management',
         'transcodeandstream.management.commands',
     ],
