@@ -13,7 +13,8 @@ from _transcoder import encode
 def progress_callback(id, progress, log):
     entry = EncodeQueueEntry.objects.get(pk=id)
     entry.progress = progress
-    entry.log = '\n'.join([entry.log, log]) if entry.log else log
+    if log:
+        entry.log = '\n'.join([entry.log, log]) if entry.log else log
     entry.save()
 
 
