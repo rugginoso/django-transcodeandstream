@@ -5,6 +5,7 @@ import json
 from transcodeandstream.models import VirtualFilesystemNode, EncodeQueueEntry
 from transcodeandstream import forms
 
+
 def encoding_infos(request):
     entries = EncodeQueueEntry.objects.values(
         'original_filename',
@@ -26,7 +27,7 @@ def get_node_by_path_or_404(path):
 
 def filesystem_operation(request, path):
     action = request.GET.get('action', 'change_directory')
-    #if not action in ('create_directory, change_directory', 'show_video', 'move', 'rename', 'remove'):
+    # if not action in ('create_directory, change_directory', 'show_video', 'move', 'rename', 'remove'):
     #    return HttpResponse(status=400)
     node = get_node_by_path_or_404(path)
 
@@ -45,22 +46,22 @@ def create_directory(request, parent_node):
 
 
 def change_directory(request, node):
-    if node == None or node.is_dir():
-        return render_to_response('show_directory.html', { 'current_dir': node })
+    if node is None or node.is_dir():
+        return render_to_response('show_directory.html', {'current_dir': node})
     else:
         return HttpResponse(status=400)
 
 
 def show_video(request, node):
-    if node == None or node.is_dir():
+    if node is None or node.is_dir():
         return HttpResponse(status=400)
     else:
-        return render_to_response('show_video.html', { 'video': node })
+        return render_to_response('show_video.html', {'video': node})
 
 
 def move(request, dest_node):
     if request.method == 'POST':
-        if dest_node != None and not dest_node.is_dir():
+        if dest_node is not None and not dest_node.is_dir():
             raise Http400('destination is not a direcroy')
 
         form = forms.MoveForm(request.POST)

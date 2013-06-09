@@ -10,7 +10,8 @@ def check_extension(path, extensions):
 def scan_dir(path, extensions):
     videos_paths = []
     for dirname, dirnames, filenames in os.walk(path):
-        videos_paths.extend([os.path.join(path, dirname, filename) for filename in filenames if check_extension(filename, extensions)])
+        videos_paths.extend([os.path.join(path, dirname, filename)
+                            for filename in filenames if check_extension(filename, extensions)])
     return videos_paths
 
 
@@ -27,16 +28,25 @@ def process_new_entry(path, is_dir, extensions, callback):
 
 
 class EventHandler(ProcessEvent):
+
     def __init__(self, callback, extensions, *args, **kwargs):
         self.callback = callback
         self.extensions = extensions
         super(EventHandler, self).__init__(*args, **kwargs)
 
     def process_IN_CREATE(self, event):
-        process_new_entry(event.pathname, event.dir, self.extensions, self.callback)
+        process_new_entry(
+            event.pathname,
+            event.dir,
+            self.extensions,
+            self.callback)
 
     def process_IN_MOVED_TO(self, event):
-        process_new_entry(event.pathname, event.dir, self.extensions, self.callback)
+        process_new_entry(
+            event.pathname,
+            event.dir,
+            self.extensions,
+            self.callback)
 
 
 def initial_check(paths_just_there, dirs, extensions, callback):
@@ -47,6 +57,7 @@ def initial_check(paths_just_there, dirs, extensions, callback):
     for p in paths:
         if not p in paths_just_there:
             callback(p)
+
 
 def watch(dirs, extensions, callback):
     wm = WatchManager()

@@ -6,14 +6,13 @@ import select
 from subprocess import Popen, PIPE
 
 
-
 def time_to_seconds(time_string):
     try:
         t = time.strptime(time_string.split('.')[0], '%H:%M:%S')
     except ValueError:
         return 0
 
-    d = datetime.timedelta(hours=t.tm_hour,minutes=t.tm_min,seconds=t.tm_sec)
+    d = datetime.timedelta(hours=t.tm_hour, minutes=t.tm_min, seconds=t.tm_sec)
     return d.total_seconds()
 
 
@@ -45,7 +44,8 @@ def parse_line(line):
     return (progress, duration, log)
 
 
-def encode(id, original_filename, dest_dir, ffmpeg_executable, ffmpeg_options, progress_callback, finish_callback):
+def encode(id, original_filename, dest_dir, ffmpeg_executable,
+           ffmpeg_options, progress_callback, finish_callback):
     cmdline = [ffmpeg_executable, '-i', original_filename]
     cmdline.extend(ffmpeg_options)
     cmdline.append(os.path.join(dest_dir, id + '.webm'))
@@ -54,7 +54,7 @@ def encode(id, original_filename, dest_dir, ffmpeg_executable, ffmpeg_options, p
     transcoder = Popen(cmdline, stderr=PIPE, universal_newlines=True)
     status = None
 
-    while status == None and select.select([transcoder.stderr.fileno()], [], []):
+    while status is None and select.select([transcoder.stderr.fileno()], [], []):
         p, d, l = parse_line(transcoder.stderr.readline())
         if not duration:
             duration = d

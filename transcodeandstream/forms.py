@@ -1,7 +1,9 @@
 from django import forms
 
+
 class MoveForm(forms.Form):
-	path = forms.CharField()
+    path = forms.CharField()
+
 
 class RenameForm(forms.Form):
-	name = forms.CharField()
+    name = forms.CharField()
