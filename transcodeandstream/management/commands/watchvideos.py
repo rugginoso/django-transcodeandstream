@@ -9,14 +9,15 @@ from _random import generate_random_unique_name
 
 
 def add_entry(path):
-    existing_names = [entry['id']
-                      for entry in EncodeQueueEntry.objects.values('id')]
-    name = generate_random_unique_name(existing_names)
-    entry = EncodeQueueEntry(
-        id=name,
-        original_filename=path,
-    )
-    entry.save()
+    if EncodeQueueEntry.objects.filter(original_filename=path).count() == 0:
+        existing_names = [entry['id']
+                          for entry in EncodeQueueEntry.objects.values('id')]
+        name = generate_random_unique_name(existing_names)
+        entry = EncodeQueueEntry(
+            id=name,
+            original_filename=path,
+        )
+        entry.save()
 
 
 class Command(BaseCommand):
