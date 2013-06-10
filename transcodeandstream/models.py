@@ -45,7 +45,7 @@ class VirtualFilesystemNodeManager(models.Manager):
 class VirtualFilesystemNode(models.Model):
     name = models.CharField(max_length=255)
     video = models.CharField(max_length=10, null=True)
-    parent = models.ForeignKey('self', related_name='children')
+    parent = models.ForeignKey('self', related_name='children', null=True)
 
     objects = VirtualFilesystemNodeManager()
 
