@@ -4,7 +4,7 @@ import time
 import os
 import sys
 
-from transcodeandstream.models import EncodeQueueEntry
+from transcodeandstream.models import EncodeQueueEntry, VirtualFilesystemNode
 from transcodeandstream.settings import TAS_TRANSCODER_POLL_SECONDS, TAS_VIDEOS_DIRECTORY, TAS_FFMPEG_EXECUTABLE, TAS_FFMPEG_OPTIONS
 
 from _transcoder import encode
@@ -20,8 +20,12 @@ def progress_callback(id, progress, log):
 
 def finish_callback(id, status):
     entry = EncodeQueueEntry.objects.get(pk=id)
-    # TODO: add record to video management
     if status == 0:
+        VirtualFilesystemNode(
+            name=os.path.basename(entry.original_filename),
+            video=entry.pk,
+            parent=None,
+        ).save()
         entry.delete()
     else:
         entry.error = True
