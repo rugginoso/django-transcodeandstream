@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_delete
 
+import os
+
 from transcodeandstream.settings import TAS_VIDEOS_DIRECTORY
 
 
@@ -54,16 +56,16 @@ class VirtualFilesystemNode(models.Model):
 
     def filename(self):
         if self.video:
-            return os.path.join(TAS_VIDEOS_DIRECTORY, instance.name + '.webm')
+            return os.path.join(TAS_VIDEOS_DIRECTORY, self.name + '.webm')
         return None
 
     def path(self):
         node = self
         components = []
         while node:
-            components.prepend(node.name)
+            components.append(node.name)
             node = node.parent
-        return '/'.join(components)
+        return '/'.join(reversed(components))
 
     class Meta:
         ordering = ('video', 'name')
