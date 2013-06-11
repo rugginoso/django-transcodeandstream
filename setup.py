@@ -34,7 +34,7 @@ setup(
     ],
     install_requires=[
         'django>=1.4',
-        'south>=1.8',
+        'south>=0.8.1',
         'pyinotify>=0.9',
     ]
 )
