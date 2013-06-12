@@ -55,7 +55,7 @@ def encode(id, original_filename, dest_dir, ffmpeg_executable,
     status = None
 
     while status is None and select.select([transcoder.stderr.fileno()], [], []):
-        p, d, l = parse_line(transcoder.stderr.readline())
+        p, d, l = parse_line(transcoder.stderr.readline().decode('utf-8'))
         if not duration:
             duration = d
         progress = p / duration * 100 if duration else 0
