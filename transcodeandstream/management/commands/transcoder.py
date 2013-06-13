@@ -5,7 +5,7 @@ import os
 import sys
 
 from transcodeandstream.models import EncodeQueueEntry, VirtualFilesystemNode
-from transcodeandstream.settings import TAS_TRANSCODER_POLL_SECONDS, TAS_VIDEOS_DIRECTORY, TAS_FFMPEG_EXECUTABLE, TAS_FFMPEG_OPTIONS
+from transcodeandstream.settings import TAS_TRANSCODER_POLL_SECONDS, TAS_VIDEOS_DIRECTORY, TAS_FFMPEG_EXECUTABLE, TAS_FFMPEG_OPTIONS, TAS_DELETE_AFTER_TRANSCODE
 
 from _transcoder import encode
 
@@ -26,6 +26,8 @@ def finish_callback(id, status):
             video=entry.pk,
             parent=None,
         ).save()
+        if TAS_DELETE_AFTER_TRANSCODE:
+            os.unlink(entry.original_filename)
         entry.delete()
     else:
         entry.error = True
