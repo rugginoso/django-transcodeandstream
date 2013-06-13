@@ -14,6 +14,7 @@ def queue(request):
 def queue_data(request):
     entries = EncodeQueueEntry.objects.values(
         'original_filename',
+        'transcode_format',
         'progress',
         'error',
         'pk',
