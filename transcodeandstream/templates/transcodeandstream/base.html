@@ -1,0 +1,36 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<!--[if IE 8]> 				 <html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>TAS - {% block TITLE %}{% endblock %}</title>
+
+  <link rel="stylesheet" href="{% static 'css/normalize.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/foundation.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/general_enclosed_foundicons.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/general_enclosed_foundicons_ie7.css' %}" />
+
+  <script src="{% static 'js/vendor/custom.modernizr.js'%}"></script>
+
+</head>
+<body>
+  <div class="row">
+    <div class="large-12 columns">
+      <div class="section-container tabs" data-section="tabs">
+        {% block CONTENT %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'js/vendor/zepto.js' %}"></script>
+  <script src="{% static 'js/vendor/jquery.js' %}"></script>
+  <script src="{% static 'js/foundation.min.js' %}"></script>
+  <script>
+  $(document).foundation();
+  </script>
+  {% block JS %}{% endblock %}
+</body>
+</html>

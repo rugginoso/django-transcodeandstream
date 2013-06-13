@@ -1,0 +1,29 @@
+{% extends 'transcodeandstream/base.html' %}
+
+
+{% block TITLE %}video.name{% endblock %}
+
+{% block CONTENT %}
+<section class="active">
+    <p class="title"><a href="{% url 'manager' %}">Manager</a></p>
+    <div class="content">
+        <div class="row">
+            <div class="large-offset-10 large-2 columns">
+                <ul class="button-group">
+                    <li><a class="button" href="{% if parent %}{% url 'filesystem-operation' parent.path %}{% else %}{% url 'filesystem-operation' %}{% endif %}">Back</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="large-6 large-centered columns">
+                <video controls>
+                  <source src="{{ MEDIA_URL }}encoded/{{ video.video }}.webm" type="video/webm">
+                </video>
+            </div>
+        </div>
+    </div>
+</section>
+<section>
+    <p class="title"><a href="{% url 'queue' %}">Queue</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'transcodeandstream/base.html' %}
+
+
+{% block TITLE %}Queue{% endblock %}
+
+{% block CONTENT %}
+<section>
+    <p class="title"><a href="{% url 'manager' %}">Manager</a></p>
+</section>
+<section class="active">
+    <p class="title"><a href="{% url 'queue' %}">Queue</a></p>
+    <div class="content">
+        <table id="queue" class="large-12">
+            <thead>
+                <th>Filename</th>
+                <th>Transcode Format</th>
+                <th>Progress</th>
+                <th>Log</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</section>
+<div id="log-modal" class="reveal-modal">
+    <h2>Log</h2>
+    <a class="close-reveal-modal">&#215;</a>
+</div>
+{% endblock %}
+
+{% block JS %}
+<script>
+    window.setInterval(function() {
+        $.getJSON('{% url 'queue-data' %}', function(entries) {
+            $('#queue tbody').empty();
+            for (var i = 0; i < entries.length; i++) {
+                $('#queue tbody').append(
+                    '<tr> \
+                        <td>'+entries[i].original_filename+'</td>\
+                        <td>'+entries[i].transcode_format+'</td>\
+                        <td><div class="progress '+ (entries[i].error ? 'alert' : '') +'"><span class="meter" style="width: '+entries[i].progress+'%"></span></div></td> \
+                        <td><a href="/queue/'+ entries[i].pk +'/log/" data-reveal-id="log-modal" data-reveal-ajax="true">Show log</a></td>\
+                    </tr>'
+                );
+            }
+        });
+    }, 1000);
+</script>
+{% endblock %}

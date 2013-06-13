@@ -1,0 +1,155 @@
+{% extends 'transcodeandstream/base.html' %}
+{% load staticfiles %}
+{% block TITLE %}Manager{% endblock %}
+
+{% block CONTENT %}
+<section class="active">
+    <p class="title"><a href="{% url 'manager' %}">Manager</a></p>
+    <div class="content">
+        <div class="row">
+            <div class="large-10 columns">
+                <h4>/{% if current_path %}{{ current_path }}{% endif %}</h4>
+            </div>
+            <div class="large-2 columns">
+                <ul class="button-group">
+                  <li><a id="new-directory-button" href="#" class="small button">New Directory</a></li>
+                </ul>
+            </div>
+        </div>
+        <table class="large-12">
+            <thead>
+                <th class="large-19">Filename</th>
+                <th class="large-3">Actions</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <i class="foundicon-folder"></i> <a href="{% if parent %}{% url 'filesystem-operation' parent.path %}{% else %}{% url 'filesystem-operation' %}{% endif %}">Parent directory</a>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                {% for child in children %}
+                <tr>
+                    <td>
+                        {% if child.is_dir %}
+                            <i class="foundicon-folder"></i> <a href="{% url 'filesystem-operation' path=child.path %}">{{ child.name }}</a>
+                        {% else %}
+                            <i class="foundicon-video"></i> <a href="{% url 'filesystem-operation' path=child.path %}?action=show_video">{{ child.name }}</a>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="move-button" href="{% url 'filesystem-operation' path=child.path %}?action=move">Move</a>
+                        <a class="rename-button" href="{% url 'filesystem-operation' path=child.path %}?action=rename">Rename</a>
+                        <a class="delete-button" href="{% url 'filesystem-operation' path=child.path %}?action=remove">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+<section>
+    <p class="title"><a href="{% url 'queue' %}">Queue</a></p>
+</section>
+<div id="rename-dialog" class="reveal-modal">
+<form>
+    <fieldset>
+        <legend>Rename</legend>
+        {% csrf_token %}
+        <div class="row">
+            <div class="large-12 columns">
+                <label>New Name</label>
+                <input type="text" name="name" />
+            </div>
+        </div>
+        <input type="submit" value="OK" />
+    </fieldset>
+</form>
+<a class="close-reveal-modal">&#215;</a>
+</div>
+<div id="move-dialog" class="reveal-modal">
+<form>
+    <fieldset>
+        <legend>Move</legend>
+        {% csrf_token %}
+        <div class="row">
+            <div class="large-12 columns">
+                <label>Destination:</label>
+                <select name="path">
+                    <option value="{% if parent %}{{ parent.path }}{% endif %}">Parent Directory</option>
+                    {% for child in children %}
+                        {% if child.is_dir %}
+                            <option value="{{ child.path }}">{{ child.name }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <input type="submit" value="OK" />
+    </fieldset>
+</form>
+<a class="close-reveal-modal">&#215;</a>
+</div>
+{% endblock %}
+{% block JS %}
+<script>
+$('#new-directory-button').click(function(event){
+    event.preventDefault();
+
+    var data = {
+        name: 'New Directory',
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+    };
+    $.post(window.location.pathname+'?action=create_directory', data, function(){
+        location.reload();
+    });
+});
+
+$('.move-button').click(function(event){
+    event.preventDefault();
+
+    $('#move-dialog form').attr('action', $(this).attr('href'));
+
+    $('#move-dialog').foundation('reveal', 'open');
+});
+
+$('#move-dialog form').submit(function(event){
+    event.preventDefault();
+
+    $.post($(this).attr('action'), $(this).serialize(), function(){
+        $('#move-dialog').foundation('reveal', 'close');
+        location.reload();
+    });
+});
+
+$('.rename-button').click(function(event){
+    event.preventDefault();
+
+    $('#rename-dialog form').attr('action', $(this).attr('href'));
+
+    $('#rename-dialog').foundation('reveal', 'open');
+});
+
+$('#rename-dialog form').submit(function(event){
+    event.preventDefault();
+
+    $.post($(this).attr('action'), $(this).serialize(), function(){
+        $('#rename-dialog').foundation('reveal', 'close');
+        location.reload();
+    });
+});
+
+$('.delete-button').click(function(event){
+    event.preventDefault();
+
+    var data = {
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+    };
+
+    $.post($(this).attr('href'), data, function() {
+        location.reload();
+    });
+});
+</script>
+{% endblock %}
