@@ -5,7 +5,7 @@ import os
 import sys
 
 from transcodeandstream.models import EncodeQueueEntry, VirtualFilesystemNode
-from transcodeandstream.settings import TAS_TRANSCODER_POLL_SECONDS, TAS_VIDEOS_DIRECTORY, TAS_FFMPEG_EXECUTABLE, TAS_FFMPEG_OPTIONS, TAS_DELETE_AFTER_TRANSCODE
+from transcodeandstream.settings import TAS_TRANSCODER_POLL_SECONDS, TAS_VIDEOS_DIRECTORY, TAS_FFMPEG_EXECUTABLE, TAS_FFMPEG_OPTIONS, TAS_FFMPEG_FORMATS_OPTIONS, TAS_DELETE_AFTER_TRANSCODE
 
 from _transcoder import encode
 
@@ -46,9 +46,11 @@ class Command(BaseCommand):
                 encode(
                     entry.pk,
                     entry.original_filename,
+                    entry.transcode_format,
                     TAS_VIDEOS_DIRECTORY,
                     TAS_FFMPEG_EXECUTABLE,
                     TAS_FFMPEG_OPTIONS,
+                    TAS_FFMPEG_FORMATS_OPTIONS,
                     progress_callback,
                     finish_callback,
                 )

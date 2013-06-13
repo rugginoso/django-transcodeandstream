@@ -3,7 +3,7 @@ from django.db.models.signals import post_delete
 
 import os
 
-from transcodeandstream.settings import TAS_VIDEOS_DIRECTORY
+from transcodeandstream.settings import TAS_VIDEOS_DIRECTORY, TAS_TRANSCODER_FORMATS
 
 
 class EncodeQueueEntryManager(models.Manager):
@@ -13,11 +13,12 @@ class EncodeQueueEntryManager(models.Manager):
 
 
 class EncodeQueueEntry(models.Model):
-    id = models.CharField(max_length=10, primary_key=True, unique=True)
-    original_filename = models.CharField(max_length=255, unique=True)
+    id = models.CharField(max_length=10, primary_key=True)
+    original_filename = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     working_on = models.BooleanField(default=False)
     progress = models.PositiveSmallIntegerField(default=0)
+    transcode_format = models.CharField(max_length=255)
     error = models.BooleanField(default=False)
     log = models.TextField(null=True)
 
@@ -25,7 +26,7 @@ class EncodeQueueEntry(models.Model):
 
     class Meta:
         ordering = ('created_at',)
-
+        unique_together = ('id', 'original_filename', 'transcode_format')
 
 class VirtualFilesystemNodeManager(models.Manager):
 
@@ -54,9 +55,11 @@ class VirtualFilesystemNode(models.Model):
     def is_dir(self):
         return self.video is None
 
-    def filename(self):
+    def filename(self, format):
         if self.video:
-            return os.path.join(TAS_VIDEOS_DIRECTORY, self.name + '.webm')
+            filename = os.path.join(TAS_VIDEOS_DIRECTORY, ''.join((self.name, '.', format)))
+            if os.path.exists(filename):
+                return filename
         return None
 
     def path(self):
@@ -75,9 +78,10 @@ class VirtualFilesystemNode(models.Model):
 def delete_physical_file(sender, **kwargs):
     instance = kwargs.get('instance')
     assert(instance)
-    filename = instance.filename()
 
-    if filename and os.path.exists(filename):
-        os.unlink(filename)
+    for format in TAS_TRANSCODER_FORMATS:
+        filename = instance.filename(format)
+        if filename:
+            os.unlink(filename)
 
 post_delete.connect(delete_physical_file, sender=VirtualFilesystemNode)

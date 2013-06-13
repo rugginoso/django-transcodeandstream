@@ -19,13 +19,22 @@ TAS_FFMPEG_EXECUTABLE = getattr(
     settings,
     'TAS_FFMPEG_EXECUTABLE',
     '/usr/bin/ffmpeg')
+
 TAS_FFMPEG_OPTIONS = getattr(
     settings,
-    'TAS_FFMPEG_EXECUTABLE',
-    ['-vcodec',
-     'libvpx',
-     '-acodec',
-     'libvorbis'])
+    'TAS_FFMPEG_OPTIONS',
+    []
+)
+
+TAS_FFMPEG_FORMATS_OPTIONS = getattr(
+    settings,
+    'TAS_FFMPEG_FORMATS_OPTIONS',
+    {
+        'webm': ['-vcodec', 'libvpx', '-acodec', 'libvorbis'],
+        'mp4': [],
+        'ogg': [],
+    }
+)
 
 TAS_TRANSCODER_POLL_SECONDS = getattr(
     settings,
@@ -33,3 +42,9 @@ TAS_TRANSCODER_POLL_SECONDS = getattr(
     10)
 
 TAS_DELETE_AFTER_TRANSCODE = getattr(settings, 'TAS_DELETE_AFTER_TRANSCODE', True)
+
+TAS_TRANSCODER_FORMATS = getattr(
+    settings,
+    'TAS_TRANSCODER_FORMATS',
+    ('webm',)
+)

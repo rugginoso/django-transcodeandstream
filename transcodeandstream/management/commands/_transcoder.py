@@ -44,11 +44,12 @@ def parse_line(line):
     return (progress, duration, log)
 
 
-def encode(id, original_filename, dest_dir, ffmpeg_executable,
-           ffmpeg_options, progress_callback, finish_callback):
+def encode(id, original_filename, format, dest_dir, ffmpeg_executable,
+           ffmpeg_options, ffmpeg_formats_options, progress_callback, finish_callback):
     cmdline = [ffmpeg_executable, '-i', original_filename]
     cmdline.extend(ffmpeg_options)
-    cmdline.append(os.path.join(dest_dir, id + '.webm'))
+    cmdline.extend(ffmpeg_formats_options.get(format, []))
+    cmdline.append(os.path.join(dest_dir, ''.join((id, '.', format))))
 
     duration = 0
     transcoder = Popen(cmdline, stderr=PIPE, universal_newlines=True)
