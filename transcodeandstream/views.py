@@ -56,8 +56,9 @@ def create_directory(request, parent_node):
 
 def change_directory(request, node):
     if node is None or node.is_dir():
+        children = list(node.children.all() if node else VirtualFilesystemNode.objects.filter(parent=None))
         context = {
-            'children': node.children.all() if node else VirtualFilesystemNode.objects.filter(parent=None),
+            'children': sorted(children, key=lambda n: (not n.is_dir(), n.name)),
             'parent': node.parent if node else None,
             'current_path': node.path if node else None,
         }
