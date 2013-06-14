@@ -8,15 +8,19 @@
     <p class="title"><a href="{% url 'manager' %}">Manager</a></p>
     <div class="content">
         <div class="row">
-            <div class="large-offset-10 large-2 columns">
-                <ul class="button-group">
-                    <li><a class="button" href="{% if parent %}{% url 'filesystem-operation' parent.path %}{% else %}{% url 'filesystem-operation' %}{% endif %}">Back</a></li>
-                </ul>
+            <div class="large-12 columns">
+                <nav class="breadcrumbs">
+                    <a href="{% url 'filesystem-operation' %}">Root</a>
+                    {% for component in path_components %}
+                        <a {% if forloop.last %}class="current"{% endif %} href="{% url 'filesystem-operation' path=component.path %}">{{ component.name }}</a>
+                    {% endfor %}
+                </nav>
             </div>
         </div>
+        <br />
         <div class="row">
-            <div class="large-6 large-centered columns">
-                <video controls>
+            <div class="large-12 columns">
+                <video controls style="display: block; margin: auto;">
                   <source src="{{ MEDIA_URL }}encoded/{{ video.video }}.webm" type="video/webm">
                 </video>
             </div>

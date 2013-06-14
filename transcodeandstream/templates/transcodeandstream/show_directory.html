@@ -11,47 +11,52 @@
                 <nav class="breadcrumbs">
                     <a href="{% url 'filesystem-operation' %}">Root</a>
                     {% for component in path_components %}
-                        <a href="{% url 'filesystem-operation' path=component.path %}">{{ component.name }}</a>
+                        <a {% if forloop.last %}class="current"{% endif %} href="{% url 'filesystem-operation' path=component.path %}">{{ component.name }}</a>
                     {% endfor %}
                 </nav>
             </div>
             <div class="large-2 columns">
-                <ul class="button-group">
-                  <li><a id="new-directory-button" href="#" class="small button">New Directory</a></li>
+                <a class="small dropdown button expand" href="#" data-dropdown="actions">Actions</a>
+                <ul id="actions" class="f-dropdown" data-dropdown-content>
+                    <li><a id="new-directory-button" href="#"><i class="foundicon-plus"></i> New Directory</a></li>
                 </ul>
             </div>
         </div>
-        <table class="large-12">
-            <thead>
-                <th class="large-19">Filename</th>
-                <th class="large-3">Actions</th>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <i class="foundicon-folder"></i> <a href="{% if parent %}{% url 'filesystem-operation' parent.path %}{% else %}{% url 'filesystem-operation' %}{% endif %}">Parent directory</a>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-                {% for child in children %}
-                <tr>
-                    <td>
-                        {% if child.is_dir %}
-                            <i class="foundicon-folder"></i> <a href="{% url 'filesystem-operation' path=child.path %}">{{ child.name }}</a>
-                        {% else %}
-                            <i class="foundicon-video"></i> <a href="{% url 'filesystem-operation' path=child.path %}?action=show_video">{{ child.name }}</a>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <a class="move-button" href="{% url 'filesystem-operation' path=child.path %}?action=move">Move</a>
-                        <a class="rename-button" href="{% url 'filesystem-operation' path=child.path %}?action=rename">Rename</a>
-                        <a class="delete-button" href="{% url 'filesystem-operation' path=child.path %}?action=remove">Delete</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <div class="row">
+            <div class="large-12 columns">
+                <table class="large-12">
+                    <thead>
+                        <th class="large-9">Filename</th>
+                        <th class="small-3">Actions</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <i class="foundicon-folder"></i> <a href="{% if parent %}{% url 'filesystem-operation' parent.path %}{% else %}{% url 'filesystem-operation' %}{% endif %}">Parent directory</a>
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        {% for child in children %}
+                        <tr>
+                            <td>
+                                {% if child.is_dir %}
+                                    <i class="foundicon-folder"></i> <a href="{% url 'filesystem-operation' path=child.path %}">{{ child.name }}</a>
+                                {% else %}
+                                    <i class="foundicon-video"></i> <a href="{% url 'filesystem-operation' path=child.path %}?action=show_video">{{ child.name }}</a>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="move-button tiny button round" href="{% url 'filesystem-operation' path=child.path %}?action=move">Move</a>
+                                <a class="rename-button tiny button round" href="{% url 'filesystem-operation' path=child.path %}?action=rename">Rename</a>
+                                <a class="delete-button tiny alert button round" href="{% url 'filesystem-operation' path=child.path %}?action=remove">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </section>
 <section>

@@ -71,7 +71,10 @@ def show_video(request, node):
     if node is None or node.is_dir():
         return HttpResponse(status=400)
     else:
-        context = {'video': node}
+        context = {
+            'video': node,
+            'path_components': node.path_components() if node else None,
+        }
         return render_to_response('transcodeandstream/show_video.html', context_instance=RequestContext(request, context))
 
 
