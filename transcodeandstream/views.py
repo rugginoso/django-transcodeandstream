@@ -60,7 +60,7 @@ def change_directory(request, node):
         context = {
             'children': sorted(children, key=lambda n: (not n.is_dir(), n.name)),
             'parent': node.parent if node else None,
-            'current_path': node.path if node else None,
+            'path_components': node.path_components() if node else None,
         }
         return render_to_response('transcodeandstream/show_directory.html', context_instance=RequestContext(request, context))
     else:

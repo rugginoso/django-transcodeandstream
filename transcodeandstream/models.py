@@ -63,12 +63,15 @@ class VirtualFilesystemNode(models.Model):
         return None
 
     def path(self):
+        return '/'.join([c.name for c in self.path_components()])
+
+    def path_components(self):
         node = self
         components = []
         while node:
-            components.append(node.name)
+            components.append(node)
             node = node.parent
-        return '/'.join(reversed(components))
+        return reversed(components)
 
     class Meta:
         ordering = ('video', 'name')
